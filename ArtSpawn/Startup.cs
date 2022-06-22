@@ -33,6 +33,7 @@ namespace ArtSpawn
 
             //Dependency injection
             services.ConfigureLoggerService();
+            services.ConfigureArtistService();
 
             services.AddControllers();
         }

@@ -8,4 +8,9 @@
     <PackageReference Include="NLog" Version="5.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ArtSpawn.Database\ArtSpawn.Database.csproj" />
+    <ProjectReference Include="..\ArtSpawn.Models\ArtSpawn.Models.csproj" />
+  </ItemGroup>
+
 </Project>
