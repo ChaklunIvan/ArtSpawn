@@ -21,7 +21,7 @@ namespace ArtSpawn
 
         public Startup(IConfiguration configuration)
         {
-            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/Configuration/NLog/NLog.config"));
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/Configurations/NLog/NLog.config"));
             Configuration = configuration;
         }
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -29,9 +29,12 @@ namespace ArtSpawn
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureCors();
+            services.ConfigureSqlContext(Configuration);
 
             //Dependency injection
             services.ConfigureLoggerService();
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

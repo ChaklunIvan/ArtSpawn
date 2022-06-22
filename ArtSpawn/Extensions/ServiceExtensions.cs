@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ArtSpawn.Database;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace ArtSpawn.Extensions
 {
@@ -12,5 +15,9 @@ namespace ArtSpawn.Extensions
                 .WithMethods("POST", "GET", "PUT", "DELETE")
                 .AllowAnyHeader());
             });
+
+        public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
+            services.AddDbContext<ApplicationDbContext>(opts =>
+            opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
     }
 }
