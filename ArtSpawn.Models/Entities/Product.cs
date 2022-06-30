@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ArtSpawn.Models.Enums;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +17,10 @@ namespace ArtSpawn.Models.Entities
         public decimal Price { get; set; }
         [Required]
         public byte[] File { get; set; }
+        public Guid ArtistId { get; set; }
         public Artist Artist { get; set; }
-        public IList<ProductCategory> ProductCategories { get; set; }
+        public Guid CategoryId { get; set; }
+        public Category Category { get; set; }
+
     }
 }

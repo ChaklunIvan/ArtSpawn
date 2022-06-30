@@ -1,9 +1,16 @@
-﻿using ArtSpawn.Infrastructure.Interfaces;
+﻿using ArtSpawn.Configurations.Headers;
+using ArtSpawn.Infrastructure.Helpers;
+using ArtSpawn.Infrastructure.Interfaces;
 using ArtSpawn.Models.Entities;
+using ArtSpawn.Models.Requests;
+using ArtSpawn.Models.Responses;
+using ArtSpawn.Models.Updates;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,43 +21,50 @@ namespace ArtSpawn.Controllers
     public class ArtistController : ControllerBase
     {
         private readonly IArtistService _artistService;
-        private readonly ILoggerService _logger;
-        private readonly IMapper _mapper;
 
-        public ArtistController(IArtistService artistService, ILoggerService logger, IMapper mapper)
+        public ArtistController(IArtistService artistService)
         {
             _artistService = artistService;
-            _logger = logger;
-            _mapper = mapper;
         }
+
         [HttpGet]
-        public async Task<IActionResult> GetAllArtists(CancellationToken cancellationToken)
+        public async Task<ActionResult<PagedList<ArtistResponse>>> GetAllArtists([FromQuery]PagingRequest pagingRequest, CancellationToken cancellationToken)
         {
-            var artists = await _artistService.FindAllAsync(cancellationToken);
-            return Ok(artists);
+            var artists = await _artistService.FindAllAsync(pagingRequest, cancellationToken);
+
+            return Ok(artists.Items).WithHeaders(PaginationHelper<ArtistResponse>.GetPagingHeaders(artists));
         }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetArtist(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<ArtistResponse>> GetArtist(Guid id, CancellationToken cancellationToken)
         {
             var artist = await _artistService.FindAsync(id, cancellationToken);
+
             return Ok(artist);
         }
+
         [HttpPost]
-        public async Task<IActionResult> CreateArtist(Artist artistToCreate, CancellationToken cancellationToken)
+        public async Task<ActionResult<ArtistResponse>> CreateArtist([FromBody] ArtistRequest artistRequest, CancellationToken cancellationToken)
         {
-            var artist = await _artistService.CreateAsync(artistToCreate, cancellationToken);
+            var artist = await _artistService.CreateAsync(artistRequest, cancellationToken);
+
             return Ok(artist);
         }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateArtist(Guid id ,Artist artistToUpdate, CancellationToken cancellationToken)
+        public async Task<ActionResult<ArtistResponse>> UpdateArtist([FromBody] ArtistUpdate artistUpdate, CancellationToken cancellationToken)
         {
-            var artist = await _artistService.UpdateAsync(artistToUpdate, cancellationToken);
+            var artist = await _artistService.UpdateAsync(artistUpdate, cancellationToken);
+
             return Ok(artist);
         }
+
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArtist(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteArtist(Guid id, CancellationToken cancellationToken)
         {
             await _artistService.DeleteAsync(id, cancellationToken);
+
             return Ok();
         }
     }

@@ -1,45 +1,41 @@
 using ArtSpawn.Extensions;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ArtSpawn
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IHostEnvironment Environment { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
-            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/Configurations/NLog/NLog.config"));
             Configuration = configuration;
+            Environment = environment;
         }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCors();
-            services.ConfigureSqlContext(Configuration);
-
-            //Dependency injection
-            services.ConfigureLoggerService();
-            services.ConfigureArtistService();
-
-            services.AddControllers();
+            services.AddControllers()
+                .Services
+                .AddProblemDetails(Environment)
+                .ConfigureCors()
+                .ConfigureSqlContext(Configuration)
+                .AddAutoMapper(typeof(Startup))
+                .AddServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -50,6 +46,7 @@ namespace ArtSpawn
                 app.UseHsts();
             }
 
+            app.UseProblemDetails();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -70,5 +67,7 @@ namespace ArtSpawn
                 endpoints.MapControllers();
             });
         }
+
+
     }
 }

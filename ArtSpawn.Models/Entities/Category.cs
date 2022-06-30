@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using ArtSpawn.Models.Enums;
+using System.Collections.Generic;
 
 namespace ArtSpawn.Models.Entities
 {
     public class Category : BaseEntity
     {
-        [Required]
-        [MaxLength(32)]
-        public string Name { get; set; }
-        public IList<ProductCategory> ProductCategories { get; set; }
+        public CategoryType Type { get; set; }
+        public IList<Product> Products { get; set; }
     }
 }

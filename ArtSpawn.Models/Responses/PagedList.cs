@@ -1,0 +1,29 @@
+﻿using ArtSpawn.Models.Entities;
+using System;
+using System.Collections.Generic;
+
+namespace ArtSpawn.Models.Responses
+{
+    public class PagedList<TEntity> : List<TEntity> where TEntity : class
+    {
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+
+        public IEnumerable<TEntity> Items { get; set; }
+
+        public bool HasPrevious => CurrentPage > 1;
+        public bool HasNext => CurrentPage < TotalPages;
+
+        //public PagedList(IEnumerable<TEntity> items, int currentPage, int pageSize, int count)
+        //{
+        //    Items = items;
+        //    CurrentPage = currentPage;
+        //    PageSize = pageSize;
+        //    TotalCount = count;
+        //    TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+        //}
+
+    }
+}

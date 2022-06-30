@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Constants\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Updates\" />
-    <Folder Include="Responses\" />
-    <Folder Include="Requests\" />
+    <None Remove="Responses\PagedList.cs~RF5e97290.TMP" />
   </ItemGroup>
 
 </Project>
