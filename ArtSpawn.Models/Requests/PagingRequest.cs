@@ -4,7 +4,7 @@ namespace ArtSpawn.Models.Requests
 {
     public class PagingRequest
     {
-        private readonly int maxPageSize = Constans.maxPageSize;
+        private readonly int maxPageSize = PaginationConstans.maxPageSize;
         public int PageNumber { get; set; } = 1;
 
         private int _pageSize = 10;

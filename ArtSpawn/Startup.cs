@@ -31,7 +31,8 @@ namespace ArtSpawn
                 .ConfigureCors()
                 .ConfigureSqlContext(Configuration)
                 .AddAutoMapper(typeof(Startup))
-                .AddServices();
+                .AddServices()
+                .AddValidators();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

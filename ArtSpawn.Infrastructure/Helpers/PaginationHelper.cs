@@ -1,14 +1,10 @@
 ﻿using ArtSpawn.Models.Constants;
-using ArtSpawn.Models.Entities;
 using ArtSpawn.Models.Responses;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Threading;
-using Microsoft.EntityFrameworkCore;
 
 namespace ArtSpawn.Infrastructure.Helpers
 {
@@ -51,8 +47,8 @@ namespace ArtSpawn.Infrastructure.Helpers
                 pagedList.HasPrevious
             };
 
-            headers.Add(PaginationHeaderConstans.XTotalCountHeaderName, pagedList.TotalCount.ToString());
-            headers.Add(PaginationHeaderConstans.XPaginationHeaderName, JsonConvert.SerializeObject(metadata));
+            headers.Add(PaginationConstans.XTotalCountHeaderName, pagedList.TotalCount.ToString());
+            headers.Add(PaginationConstans.XPaginationHeaderName, JsonConvert.SerializeObject(metadata));
 
             return headers;
         }

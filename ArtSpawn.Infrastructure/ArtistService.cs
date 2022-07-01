@@ -8,7 +8,6 @@ using ArtSpawn.Models.Responses;
 using ArtSpawn.Models.Updates;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
@@ -21,12 +20,10 @@ namespace ArtSpawn.Infrastructure
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<ArtistService> _logger;
-        public ArtistService(ApplicationDbContext context, IMapper mapper, ILogger<ArtistService> logger)
+        public ArtistService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _logger = logger;
         }
 
         public async Task<ArtistResponse> CreateAsync(ArtistRequest artistRequest, CancellationToken cancellationToken)
@@ -46,7 +43,7 @@ namespace ArtSpawn.Infrastructure
             var artist = await _context.Artists.FirstOrDefaultAsync(a => a.Id == id, cancellationToken) ??
                 throw new NotFoundException($"Artist with id: {id} was not found");
             
-            _context.Remove(artist);
+            _context.Artists.Remove(artist);
             await _context.SaveChangesAsync(cancellationToken);
         }
 

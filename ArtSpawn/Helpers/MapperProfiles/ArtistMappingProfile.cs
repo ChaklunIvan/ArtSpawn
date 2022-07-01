@@ -4,7 +4,7 @@ using ArtSpawn.Models.Responses;
 using ArtSpawn.Models.Updates;
 using AutoMapper;
 
-namespace ArtSpawn.Mapper
+namespace ArtSpawn.Helpers.MapperProfiles
 {
     public class ArtistMappingProfile : Profile
     {

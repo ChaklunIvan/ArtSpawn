@@ -11,6 +11,8 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using ArtSpawn.Models.Exceptions;
+using FluentValidation;
+using ArtSpawn.Helpers.Validators;
 
 namespace ArtSpawn.Extensions
 {
@@ -38,6 +40,7 @@ namespace ArtSpawn.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             return services;
         }
 
@@ -72,5 +75,11 @@ namespace ArtSpawn.Extensions
             return services;
         }
 
+        public static IServiceCollection AddValidators(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssemblyContaining<ArtistValidator>();
+
+            return services;
+        }
     }
 }

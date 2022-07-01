@@ -1,16 +1,11 @@
 ﻿using ArtSpawn.Configurations.Headers;
 using ArtSpawn.Infrastructure.Helpers;
 using ArtSpawn.Infrastructure.Interfaces;
-using ArtSpawn.Models.Entities;
 using ArtSpawn.Models.Requests;
 using ArtSpawn.Models.Responses;
 using ArtSpawn.Models.Updates;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
