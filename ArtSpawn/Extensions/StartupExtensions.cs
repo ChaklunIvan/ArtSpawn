@@ -13,6 +13,7 @@ using System.Net;
 using ArtSpawn.Models.Exceptions;
 using FluentValidation;
 using ArtSpawn.Helpers.Validators;
+using FluentValidation.AspNetCore;
 
 namespace ArtSpawn.Extensions
 {
@@ -77,7 +78,15 @@ namespace ArtSpawn.Extensions
 
         public static IServiceCollection AddValidators(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssemblyContaining<ArtistValidator>();
+            services.AddFluentValidationAutoValidation();
+
+            services.AddValidatorsFromAssemblyContaining<ArtistRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<CategoryRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<ProductRequestValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<ArtistUpdateValidator>();
+            services.AddValidatorsFromAssemblyContaining<CategoryUpdateValidator>();
+            services.AddValidatorsFromAssemblyContaining<ProductUpdateValidator>();
 
             return services;
         }

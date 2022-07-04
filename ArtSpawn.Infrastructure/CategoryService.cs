@@ -56,7 +56,7 @@ namespace ArtSpawn.Infrastructure
         public async Task<CategoryResponse> FindAsync(Guid id, CancellationToken cancellationToken)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(a => a.Id == id, cancellationToken) ??
-                 throw new NotFoundException($"Artist with id: {id} was not found");
+                 throw new NotFoundException($"Category with id: {id} was not found");
 
             var categoryResponse = _mapper.Map<CategoryResponse>(category);
 

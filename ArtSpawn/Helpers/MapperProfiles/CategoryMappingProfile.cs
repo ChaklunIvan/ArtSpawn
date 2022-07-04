@@ -10,9 +10,7 @@ namespace ArtSpawn.Helpers.MapperProfiles
     {
         public CategoryMappingProfile()
         {
-            CreateMap<CategoryRequest, Category>()
-                .ForMember(category => category.Type, opt =>
-                opt.MapFrom(category => category.Type));
+            CreateMap<CategoryRequest, Category>();
 
             CreateMap<Category, CategoryResponse>();
 
