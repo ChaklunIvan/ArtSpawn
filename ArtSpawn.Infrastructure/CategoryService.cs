@@ -8,9 +8,11 @@ using ArtSpawn.Models.Updates;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ArtSpawn.Infrastructure.Helpers;
 
 namespace ArtSpawn.Infrastructure
 {
@@ -44,13 +46,17 @@ namespace ArtSpawn.Infrastructure
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<CategoryResponse>> FindAllAsync(CancellationToken cancellationToken)
+        public Task<PagedList<CategoryResponse>> FindAllAsync(PagingRequest pagingRequest ,CancellationToken cancellationToken)
         {
-            var categories = await _context.Categories.ToListAsync(cancellationToken);
+            var categories = _context.Categories.OrderBy(c => c.Id).AsQueryable();
 
-            var categoriesResponse = _mapper.Map<IEnumerable<CategoryResponse>>(categories);
+            var (items, count) = PaginationHelper<Category>.ToPagedList(categories, pagingRequest.PageNumber, pagingRequest.PageSize);
 
-            return categoriesResponse;
+            var mapped = _mapper.Map<IEnumerable<CategoryResponse>>(items);
+
+            var categoryResponses = PaginationHelper<CategoryResponse>.GetPagedModel(mapped, count, pagingRequest.PageNumber, pagingRequest.PageSize);
+
+            return Task.FromResult(categoryResponses);
         }
 
         public async Task<CategoryResponse> FindAsync(Guid id, CancellationToken cancellationToken)

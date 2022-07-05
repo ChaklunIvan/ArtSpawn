@@ -13,7 +13,7 @@ namespace ArtSpawn.Infrastructure.Interfaces
         Task<CategoryResponse> CreateAsync(CategoryRequest categoryRequest, CancellationToken cancellationToken);
         Task<CategoryResponse> UpdateAsync(CategoryUpdate categoryUpdate, CancellationToken cancellationToken);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
-        Task<IEnumerable<CategoryResponse>> FindAllAsync(CancellationToken cancellationToken);
+        Task<PagedList<CategoryResponse>> FindAllAsync(PagingRequest pagingRequest, CancellationToken cancellationToken);
         Task<CategoryResponse> FindAsync(Guid id, CancellationToken cancellationToken);
     }
 }

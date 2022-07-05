@@ -42,6 +42,8 @@ namespace ArtSpawn.Extensions
         {
             services.AddScoped<IArtistService, ArtistService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+
             return services;
         }
 

@@ -1,4 +1,6 @@
-﻿using ArtSpawn.Infrastructure.Interfaces;
+﻿using ArtSpawn.Configurations.Headers;
+using ArtSpawn.Infrastructure.Helpers;
+using ArtSpawn.Infrastructure.Interfaces;
 using ArtSpawn.Models.Requests;
 using ArtSpawn.Models.Responses;
 using ArtSpawn.Models.Updates;
@@ -23,11 +25,11 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ArtistResponse>>> GetAllCategories(CancellationToken cancellationToken)
+        public async Task<ActionResult<PagedList<CategoryResponse>>> GetAllCategories(PagingRequest pagingRequest ,CancellationToken cancellationToken)
         {
-            var categories = await _categoryService.FindAllAsync(cancellationToken);
+            var categories = await _categoryService.FindAllAsync(pagingRequest, cancellationToken);
             
-            return Ok(categories);
+            return Ok(categories.Items).WithHeaders(PaginationHelper<CategoryResponse>.GetPagingHeaders(categories));
         }
 
         [HttpGet("{id}")]
