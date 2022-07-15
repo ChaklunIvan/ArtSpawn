@@ -1,9 +1,13 @@
 ﻿using ArtSpawn.Database;
+using ArtSpawn.Infrastructure.Helpers;
 using ArtSpawn.Infrastructure.Interfaces;
 using ArtSpawn.Models.Entities;
+using ArtSpawn.Models.Exceptions;
 using ArtSpawn.Models.Requests;
 using ArtSpawn.Models.Responses;
+using ArtSpawn.Models.Updates;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +32,7 @@ namespace ArtSpawn.Infrastructure
         {
             var product = _mapper.Map<Product>(productRequest);
             var result = await _context.Products.AddAsync(product, cancellationToken);
-
+            result.Entity.File = new byte[1];
             await _context.SaveChangesAsync(cancellationToken);
 
             var productResponse = _mapper.Map<ProductResponse>(result.Entity);
@@ -36,24 +40,48 @@ namespace ArtSpawn.Infrastructure
             return productResponse;
         }
 
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken) ??
+                throw new NotFoundException($"Prodcut with id: {id} was not found");
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public Task<PagedList<ProductResponse>> FindAllAsync(PagingRequest pagingRequest, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var products = _context.Products.OrderBy(a => a.Id).AsQueryable();
+
+            var (items, count) = PaginationHelper<Product>.ToPagedList(products, pagingRequest.PageNumber, pagingRequest.PageSize);
+
+            var mapped = _mapper.Map<IEnumerable<ProductResponse>>(items);
+
+            var productResponse = PaginationHelper<ProductResponse>.GetPagedModel(mapped, count, pagingRequest.PageNumber, pagingRequest.PageSize);
+
+            return Task.FromResult(productResponse);
         }
 
-        public Task<ProductResponse> FindAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<ProductResponse> FindAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken) ??
+                throw new NotFoundException($"Prodcut with id: {id} was not found");
+
+            var productResponse = _mapper.Map<ProductResponse>(product);
+
+            return productResponse;
         }
 
-        public Task<ProductResponse> UpdateAsync(ProductRequest productRequest, CancellationToken cancellationToken)
+        public async Task<ProductResponse> UpdateAsync(ProductUpdate productUpdate, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var product = _mapper.Map<Product>(productUpdate);
+            var result = _context.Products.Update(product);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var productResponse = _mapper.Map<ProductResponse>(result.Entity);
+
+            return productResponse;
         }
     }
 }

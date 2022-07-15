@@ -2,6 +2,6 @@
 {
     public class CategoryResponse
     {
-
+        public string Category { get; set; }
     }
 }
