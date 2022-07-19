@@ -21,9 +21,11 @@ namespace ArtSpawn.Database.Configurations
                 .IsRequired();
 
             builder.Property(c => c.Type)
-                .HasColumnName("category_type")
+                .HasColumnName("category_name")
                 .IsRequired()
                 .HasMaxLength(20);
+            builder.HasIndex(c => c.Type)
+                .IsUnique();
 
             builder.HasMany(p => p.Products)
                 .WithOne(a => a.Category);

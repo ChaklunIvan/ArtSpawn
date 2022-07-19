@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,13 +44,13 @@ namespace ArtSpawn.Infrastructure
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken) ??
-                throw new NotFoundException($"Prodcut with id: {id} was not found");
+                throw new NotFoundException($"Product with id: {id} was not found");
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task<PagedList<ProductResponse>> FindAllAsync(PagingRequest pagingRequest, CancellationToken cancellationToken)
+        public Task<PagedList<ProductResponse>> FindAllAsync(PagingRequest pagingRequest)
         {
             var products = _context.Products.OrderBy(a => a.Id).AsQueryable();
 
@@ -65,11 +66,24 @@ namespace ArtSpawn.Infrastructure
         public async Task<ProductResponse> FindAsync(Guid id, CancellationToken cancellationToken)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken) ??
-                throw new NotFoundException($"Prodcut with id: {id} was not found");
+                throw new NotFoundException($"Product with id: {id} was not found");
 
             var productResponse = _mapper.Map<ProductResponse>(product);
 
             return productResponse;
+        }
+
+        public Task<PagedList<ProductResponse>> FindByAsync(PagingRequest pagingRequest, Expression<Func<Product, bool>> expression)
+        {
+            var products = _context.Products.Where(expression).OrderBy(a => a.Id).AsQueryable();
+
+            var (items, count) = PaginationHelper<Product>.ToPagedList(products, pagingRequest.PageNumber, pagingRequest.PageSize);
+
+            var mapped = _mapper.Map<IEnumerable<ProductResponse>>(items);
+
+            var productResponse = PaginationHelper<ProductResponse>.GetPagedModel(mapped, count, pagingRequest.PageNumber, pagingRequest.PageSize);
+
+            return Task.FromResult(productResponse);
         }
 
         public async Task<ProductResponse> UpdateAsync(ProductUpdate productUpdate, CancellationToken cancellationToken)

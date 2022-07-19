@@ -1,9 +1,11 @@
 ﻿using ArtSpawn.Configurations.Headers;
 using ArtSpawn.Infrastructure.Helpers;
 using ArtSpawn.Infrastructure.Interfaces;
+using ArtSpawn.Models.Constants;
 using ArtSpawn.Models.Requests;
 using ArtSpawn.Models.Responses;
 using ArtSpawn.Models.Updates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -25,9 +27,9 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedList<ProductResponse>>> GetAllProduct([FromQuery] PagingRequest pagingRequest, CancellationToken cancellationToken)
+        public async Task<ActionResult<PagedList<ProductResponse>>> GetAllProduct([FromQuery] PagingRequest pagingRequest)
         {
-            var products = await _productService.FindAllAsync(pagingRequest, cancellationToken);
+            var products = await _productService.FindAllAsync(pagingRequest);
 
             return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products));
         }
@@ -40,19 +42,26 @@ namespace ArtSpawn.Controllers
             return Ok(product);
         }
 
-        [HttpGet("categories/{id}")]
-        public async Task<ActionResult<PagedList<ProductResponse>>> GetProductsByCategory([FromQuery] PagingRequest pagingRequest, Guid id, CancellationToken cancellationToken)
+        [HttpGet("by-artist")]
+        [Authorize(Roles = RoleCostants.Artist)]
+        public async Task<ActionResult<PagedList<ProductResponse>>> GetProductsByArtist([FromQuery] PagingRequest pagingRequest, [FromQuery] Guid id)
         {
-            var products = await _productService.FindAllAsync(pagingRequest, cancellationToken);
-            
-            return Ok(products.Items.Where(i => i.CategoryId == id))
-                .WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products));
+            var products = await _productService.FindByAsync(pagingRequest, s => s.ArtistId == id);
+
+            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products));
         }
 
-        [HttpPost("artists/{id}")]
-        public async Task<ActionResult<ProductResponse>> CreateProduct([FromBody] ProductRequest productRequest, Guid id, CancellationToken cancellationToken)
+        [HttpGet("by-category")]
+        public async Task<ActionResult<PagedList<ProductResponse>>> GetProductsByCategory([FromQuery] PagingRequest pagingRequest, [FromQuery] Guid id, CancellationToken cancellationToken)
         {
-            productRequest.ArtistId = id;
+            var products = await _productService.FindByAsync(pagingRequest, s => s.CategoryId == id);
+
+            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductResponse>> CreateProduct([FromBody] ProductRequest productRequest, CancellationToken cancellationToken)
+        {
             var product = await _productService.CreateAsync(productRequest, cancellationToken);
 
             return Ok(product);
