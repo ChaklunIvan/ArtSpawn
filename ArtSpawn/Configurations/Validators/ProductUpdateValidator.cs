@@ -1,7 +1,7 @@
 ﻿using ArtSpawn.Models.Updates;
 using FluentValidation;
 
-namespace ArtSpawn.Helpers.Validators
+namespace ArtSpawn.Configurations.Validators
 {
     public class ProductUpdateValidator : AbstractValidator<ProductUpdate>
     {

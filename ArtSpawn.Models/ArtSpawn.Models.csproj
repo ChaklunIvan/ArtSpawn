@@ -8,4 +8,8 @@
     <None Remove="Responses\PagedList.cs~RF5e97290.TMP" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.6" />
+  </ItemGroup>
+
 </Project>

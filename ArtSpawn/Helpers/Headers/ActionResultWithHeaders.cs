@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace ArtSpawn.Configurations.Headers
+namespace ArtSpawn.Helpers.Headers
 {
     public class ActionResultWithHeaders : ActionResult
     {

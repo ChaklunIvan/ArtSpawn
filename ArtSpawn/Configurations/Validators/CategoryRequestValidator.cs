@@ -3,7 +3,7 @@ using ArtSpawn.Models.Exceptions;
 using ArtSpawn.Models.Requests;
 using FluentValidation;
 
-namespace ArtSpawn.Helpers.Validators
+namespace ArtSpawn.Configurations.Validators
 {
     public class CategoryRequestValidator : AbstractValidator<CategoryRequest>
     {

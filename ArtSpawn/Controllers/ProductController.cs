@@ -1,4 +1,4 @@
-﻿using ArtSpawn.Configurations.Headers;
+﻿using ArtSpawn.Extensions;
 using ArtSpawn.Infrastructure.Helpers;
 using ArtSpawn.Infrastructure.Interfaces;
 using ArtSpawn.Models.Constants;

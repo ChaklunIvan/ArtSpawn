@@ -1,7 +1,7 @@
 ﻿using ArtSpawn.Models.Entities;
 using FluentValidation;
 
-namespace ArtSpawn.Helpers.Validators
+namespace ArtSpawn.Configurations.Validators
 {
     public class ArtistRequestValidator : AbstractValidator<Artist>
     {

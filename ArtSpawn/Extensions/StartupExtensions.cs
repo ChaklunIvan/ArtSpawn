@@ -12,8 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using ArtSpawn.Models.Exceptions;
 using FluentValidation;
-using ArtSpawn.Helpers.Validators;
 using FluentValidation.AspNetCore;
+using ArtSpawn.Models.Entities;
+using Microsoft.AspNetCore.Identity;
+using ArtSpawn.Configurations.Validators;
 
 namespace ArtSpawn.Extensions
 {
@@ -43,6 +45,7 @@ namespace ArtSpawn.Extensions
             services.AddScoped<IArtistService, ArtistService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }
@@ -85,10 +88,30 @@ namespace ArtSpawn.Extensions
             services.AddValidatorsFromAssemblyContaining<ArtistRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<CategoryRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<ProductRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserRequestValidator>();
 
             services.AddValidatorsFromAssemblyContaining<ArtistUpdateValidator>();
             services.AddValidatorsFromAssemblyContaining<CategoryUpdateValidator>();
             services.AddValidatorsFromAssemblyContaining<ProductUpdateValidator>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddIdentity(this IServiceCollection services)
+        {
+            var builder = services.AddIdentityCore<User>(o =>
+            {
+                o.Password.RequireDigit = true;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 8;
+                o.User.RequireUniqueEmail = true;
+            });
+
+            builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
+            builder.AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             return services;
         }
