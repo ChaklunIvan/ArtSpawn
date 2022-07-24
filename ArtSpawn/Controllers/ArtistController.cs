@@ -1,9 +1,11 @@
 ﻿using ArtSpawn.Extensions;
 using ArtSpawn.Infrastructure.Helpers;
 using ArtSpawn.Infrastructure.Interfaces;
+using ArtSpawn.Models.Constants;
 using ArtSpawn.Models.Requests;
 using ArtSpawn.Models.Responses;
 using ArtSpawn.Models.Updates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
@@ -39,6 +41,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleCostants.Artist)]
         public async Task<ActionResult<ArtistResponse>> CreateArtist([FromBody] ArtistRequest artistRequest, CancellationToken cancellationToken)
         {
             var artist = await _artistService.CreateAsync(artistRequest, cancellationToken);
@@ -47,6 +50,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = RoleCostants.Artist)]
         public async Task<ActionResult<ArtistResponse>> UpdateArtist([FromBody] ArtistUpdate artistUpdate, CancellationToken cancellationToken)
         {
             var artist = await _artistService.UpdateAsync(artistUpdate, cancellationToken);
@@ -56,6 +60,7 @@ namespace ArtSpawn.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = RoleCostants.Artist + ", " + RoleCostants.Admin)]
         public async Task<ActionResult> DeleteArtist(Guid id, CancellationToken cancellationToken)
         {
             await _artistService.DeleteAsync(id, cancellationToken);

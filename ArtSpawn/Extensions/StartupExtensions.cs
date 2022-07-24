@@ -16,6 +16,9 @@ using FluentValidation.AspNetCore;
 using ArtSpawn.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using ArtSpawn.Configurations.Validators;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ArtSpawn.Extensions
 {
@@ -46,6 +49,7 @@ namespace ArtSpawn.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             return services;
         }
@@ -70,12 +74,22 @@ namespace ArtSpawn.Extensions
                     Status = (int)HttpStatusCode.BadRequest,
                 });
 
+                config.Map<UnauthorizedException>(exception =>
+                new ProblemDetails
+                {
+                    Type = exception.GetType().ToString(),
+                    Detail = exception.Message,
+                    Status = (int)HttpStatusCode.Unauthorized,
+                });
+
                 config.Map<Exception>(exception => new ProblemDetails
                 {
                     Type = exception.GetType().ToString(),
                     Detail = exception.Message,
                     Status = (int)HttpStatusCode.InternalServerError,
                 });
+
+                
             });
 
             return services;
@@ -89,6 +103,7 @@ namespace ArtSpawn.Extensions
             services.AddValidatorsFromAssemblyContaining<CategoryRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<ProductRequestValidator>();
             services.AddValidatorsFromAssemblyContaining<UserRequestValidator>();
+            services.AddValidatorsFromAssemblyContaining<AuthenticationRequestValidator>();
 
             services.AddValidatorsFromAssemblyContaining<ArtistUpdateValidator>();
             services.AddValidatorsFromAssemblyContaining<CategoryUpdateValidator>();
@@ -113,6 +128,34 @@ namespace ArtSpawn.Extensions
             builder.AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            return services;
+        }
+
+        public static IServiceCollection ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
+            var secretKey = Environment.GetEnvironmentVariable("SECRET");
+
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings.GetSection("validIssuer").Value,
+                        ValidAudience = jwtSettings.GetSection("validAudience").Value,
+                        IssuerSigningKey = new
+                        SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+
+                    };
+                });
             return services;
         }
     }

@@ -1,9 +1,11 @@
 ﻿using ArtSpawn.Extensions;
 using ArtSpawn.Infrastructure.Helpers;
 using ArtSpawn.Infrastructure.Interfaces;
+using ArtSpawn.Models.Constants;
 using ArtSpawn.Models.Requests;
 using ArtSpawn.Models.Responses;
 using ArtSpawn.Models.Updates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -41,6 +43,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleCostants.Artist + ", " + RoleCostants.Admin)]
         public async Task<ActionResult<CategoryResponse>> CreateCategory([FromBody]CategoryRequest categoryRequest, CancellationToken cancellationToken)
         {
             var category = await _categoryService.CreateAsync(categoryRequest, cancellationToken);
@@ -49,6 +52,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = RoleCostants.Artist + ", " + RoleCostants.Admin)]
         public async Task<ActionResult<CategoryResponse>> UpdateCategory([FromBody] CategoryUpdate categoryUpdate, CancellationToken cancellationToken)
         {
             var category = await _categoryService.UpdateAsync(categoryUpdate, cancellationToken);
@@ -57,6 +61,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = RoleCostants.Artist + ", " + RoleCostants.Admin)]
         public async Task<ActionResult> DeleteCategory(Guid id, CancellationToken cancellationToken)
         {
             await _categoryService.DeleteAsync(id, cancellationToken);

@@ -17,10 +17,12 @@ namespace ArtSpawn.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public AuthenticationController(IUserService userService)
+        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService)
         {
             _userService = userService;
+            _authenticationService = authenticationService;
         }
 
         [HttpPost]
@@ -30,6 +32,14 @@ namespace ArtSpawn.Controllers
 
             return result;
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Authenticate([FromBody] AuthenticationRequest authenticationRequest)
+        {
+            await _authenticationService.ValidateUserAsync(authenticationRequest);
+
+            return Ok(new { Token = await _authenticationService.CreateTokenAsync() });
+        } 
     }
    
 }

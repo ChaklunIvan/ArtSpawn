@@ -43,7 +43,6 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpGet("by-artist")]
-        [Authorize(Roles = RoleCostants.Artist)]
         public async Task<ActionResult<PagedList<ProductResponse>>> GetProductsByArtist([FromQuery] PagingRequest pagingRequest, [FromQuery] Guid id)
         {
             var products = await _productService.FindByAsync(pagingRequest, s => s.ArtistId == id);
@@ -60,6 +59,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RoleCostants.Artist)]
         public async Task<ActionResult<ProductResponse>> CreateProduct([FromBody] ProductRequest productRequest, CancellationToken cancellationToken)
         {
             var product = await _productService.CreateAsync(productRequest, cancellationToken);
@@ -68,6 +68,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = RoleCostants.Artist)]
         public async Task<ActionResult<ProductResponse>> UpdateProduct([FromBody] ProductUpdate productUpdate, CancellationToken cancellationToken)
         {
             var product = await _productService.UpdateAsync(productUpdate, cancellationToken);
@@ -76,6 +77,7 @@ namespace ArtSpawn.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = RoleCostants.Artist + ", " + RoleCostants.Admin)]
         public async Task<ActionResult> DeleteProduct(Guid id, CancellationToken cancellationToken)
         {
             await _productService.DeleteAsync(id, cancellationToken);
