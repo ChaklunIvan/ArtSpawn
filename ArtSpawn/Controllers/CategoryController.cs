@@ -31,7 +31,7 @@ namespace ArtSpawn.Controllers
         {
             var categories = await _categoryService.FindAllAsync(pagingRequest, cancellationToken);
             
-            return Ok(categories.Items).WithHeaders(PaginationHelper<CategoryResponse>.GetPagingHeaders(categories));
+            return Ok(categories.Items).WithHeaders(PaginationHelper<CategoryResponse>.GetPagingHeaders(categories), categories.Items);
         }
 
         [HttpGet("{id}")]

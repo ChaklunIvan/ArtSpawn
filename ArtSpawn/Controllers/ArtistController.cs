@@ -29,7 +29,7 @@ namespace ArtSpawn.Controllers
         {
             var artists = await _artistService.FindAllAsync(pagingRequest, cancellationToken);
 
-            return Ok(artists.Items).WithHeaders(PaginationHelper<ArtistResponse>.GetPagingHeaders(artists));
+            return Ok(artists.Items).WithHeaders(PaginationHelper<ArtistResponse>.GetPagingHeaders(artists), artists.Items);
         }
 
         [HttpGet("{id}")]

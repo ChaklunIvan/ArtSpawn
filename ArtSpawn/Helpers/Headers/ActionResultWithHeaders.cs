@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
 using System.Threading.Tasks;
 
 namespace ArtSpawn.Helpers.Headers
@@ -8,11 +9,13 @@ namespace ArtSpawn.Helpers.Headers
     {
         private readonly IHeaderDictionary _headers;
         private readonly ActionResult _result;
+        public IEnumerable Items { get; set; }
 
-        public ActionResultWithHeaders(ActionResult receiver, IHeaderDictionary headers)
+        public ActionResultWithHeaders(ActionResult receiver, IHeaderDictionary headers, IEnumerable items)
         {
             _result = receiver;
             _headers = headers;
+            Items = items;
         }
 
         private void AddHeaders(HttpResponse response)

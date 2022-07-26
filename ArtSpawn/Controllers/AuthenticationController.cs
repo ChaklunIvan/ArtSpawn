@@ -30,7 +30,7 @@ namespace ArtSpawn.Controllers
         {
             var result = await _userService.CreateAsync(userRequest);
 
-            return result;
+            return Ok(result);
         }
 
         [HttpPost("login")]

@@ -31,7 +31,7 @@ namespace ArtSpawn.Controllers
         {
             var products = await _productService.FindAllAsync(pagingRequest);
 
-            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products));
+            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products), products.Items);
         }
 
         [HttpGet("{id}")]
@@ -47,7 +47,7 @@ namespace ArtSpawn.Controllers
         {
             var products = await _productService.FindByAsync(pagingRequest, s => s.ArtistId == id);
 
-            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products));
+            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products), products.Items);
         }
 
         [HttpGet("by-category")]
@@ -55,7 +55,7 @@ namespace ArtSpawn.Controllers
         {
             var products = await _productService.FindByAsync(pagingRequest, s => s.CategoryId == id);
 
-            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products));
+            return Ok(products.Items).WithHeaders(PaginationHelper<ProductResponse>.GetPagingHeaders(products), products.Items);
         }
 
         [HttpPost]

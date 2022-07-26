@@ -15,15 +15,5 @@ namespace ArtSpawn.Models.Responses
 
         public bool HasPrevious => CurrentPage > 1;
         public bool HasNext => CurrentPage < TotalPages;
-
-        //public PagedList(IEnumerable<TEntity> items, int currentPage, int pageSize, int count)
-        //{
-        //    Items = items;
-        //    CurrentPage = currentPage;
-        //    PageSize = pageSize;
-        //    TotalCount = count;
-        //    TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        //}
-
     }
 }
